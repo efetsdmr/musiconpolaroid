@@ -639,10 +639,12 @@ def login(payload: LoginPayload, response: Response) -> dict[str, Any]:
         )
         connection.commit()
 
+    is_https = True  # Render always serves over HTTPS
     response.set_cookie(
         key=SESSION_COOKIE_NAME,
         value=token,
         httponly=True,
+        secure=is_https,
         samesite="lax",
         max_age=SESSION_DURATION_DAYS * 24 * 60 * 60,
     )
