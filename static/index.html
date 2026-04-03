@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Musicon Polariod | Foto Satış Takibi</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section id="loginView" class="auth-shell">
+        <article class="card login-card">
+          <div class="section-head login-head">
+            <p class="brand-name">Musicon Polariod</p>
+          </div>
+
+          <form id="loginForm" class="sale-form">
+            <label>
+              <span>Kullanıcı Adı</span>
+              <input type="text" id="username" required />
+            </label>
+
+            <label>
+              <span>Şifre</span>
+              <input type="password" id="password" required />
+            </label>
+
+            <p id="loginError" class="form-error hidden"></p>
+
+            <div class="form-actions">
+              <button type="submit" class="primary-btn">Giriş Yap</button>
+            </div>
+          </form>
+        </article>
+      </section>
+
+      <section id="appView" class="hidden">
+        <section class="hero-bar">
+          <div class="brand-cluster">
+            <div class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 220 220" class="brand-logo" role="img">
+                <rect x="32" y="22" width="156" height="122" rx="18" class="logo-fill" />
+                <rect x="46" y="36" width="36" height="14" rx="4" class="logo-cut" />
+                <circle cx="160" cy="42" r="10" class="logo-cut" />
+                <circle cx="110" cy="88" r="34" class="logo-cut" />
+                <circle cx="110" cy="88" r="22" class="logo-fill" />
+                <rect x="64" y="140" width="92" height="64" rx="8" class="logo-cut" />
+                <rect x="64" y="188" width="92" height="10" rx="3" class="logo-cut" />
+                <path
+                  d="M118 154v30.5a10.5 10.5 0 1 1-7-10v-20.5l26-6v25a10.5 10.5 0 1 1-7-10v-15z"
+                  class="logo-fill"
+                />
+              </svg>
+            </div>
+            <div class="brand-copy">
+              <p class="brand-name">Musicon Polariod</p>
+            </div>
+          </div>
+
+          <div class="profile-menu">
+            <button type="button" id="profileToggleBtn" class="profile-trigger" aria-expanded="false">
+              <span class="profile-avatar" id="profileAvatar">M</span>
+              <span class="profile-meta">
+                <strong id="currentUserName">-</strong>
+                <span id="currentUserRole">-</span>
+              </span>
+            </button>
+            <div id="profileDropdown" class="profile-dropdown hidden">
+              <div class="profile-dropdown-head">
+                <strong id="profileDropdownName">-</strong>
+                <span id="profileDropdownRole">-</span>
+              </div>
+              <button type="button" id="logoutBtn" class="secondary-btn profile-logout">Çıkış Yap</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="summary-grid">
+          <article id="todaySummaryCard" class="card summary-card">
+            <div class="summary-card-head">
+              <span>Bugün</span>
+              <select id="todaySummaryUserFilter" class="summary-card-filter hidden" aria-label="Bugün kartı kullanıcı filtresi">
+                <option value="">Tümü</option>
+              </select>
+            </div>
+            <strong id="todayTotal">0 TL</strong>
+          </article>
+          <article id="monthSummaryCard" class="card summary-card">
+            <div class="summary-card-head">
+              <span>Bu Ay</span>
+              <select id="monthSummaryUserFilter" class="summary-card-filter hidden" aria-label="Bu ay kartı kullanıcı filtresi">
+                <option value="">Tümü</option>
+              </select>
+            </div>
+            <strong id="monthTotal">0 TL</strong>
+          </article>
+          <article id="grandSummaryCard" class="card summary-card">
+            <div class="summary-card-head">
+              <span>Toplam Ciro</span>
+              <select id="grandSummaryUserFilter" class="summary-card-filter hidden" aria-label="Toplam ciro kartı kullanıcı filtresi">
+                <option value="">Tümü</option>
+              </select>
+            </div>
+            <strong id="grandTotal">0 TL</strong>
+          </article>
+          <article id="totalPhotosSummaryCard" class="card summary-card">
+            <div class="summary-card-head">
+              <span>Toplam Fotoğraf</span>
+              <select id="totalPhotosSummaryUserFilter" class="summary-card-filter hidden" aria-label="Toplam fotoğraf kartı kullanıcı filtresi">
+                <option value="">Tümü</option>
+              </select>
+            </div>
+            <strong id="totalPhotos">0</strong>
+          </article>
+        </section>
+
+        <section id="workerCompensationSection" class="roles-grid hidden">
+          <article class="card role-card">
+            <div class="section-head">
+              <h2>Potansiyel Kazanç</h2>
+              <p>
+                <span id="workerCompensationDateLabel">Bugünkü</span> hakediş ve prim
+                bilgisi yalnızca işçinin kendi kayıtlarına göre hesaplanır.
+              </p>
+            </div>
+            <div class="compensation-grid">
+              <article class="comp-card">
+                <span>Ana Hakediş</span>
+                <strong id="baseEarnings">0 TL</strong>
+              </article>
+              <article id="bonusCard" class="comp-card">
+                <span>Prim</span>
+                <strong id="bonusEarnings">0 TL</strong>
+              </article>
+              <article class="comp-card">
+                <span>Toplam Kazanç</span>
+                <strong id="totalEarnings">0 TL</strong>
+              </article>
+              <article class="comp-card">
+                <span>Toplam Fotoğraf</span>
+                <strong id="workerTotalPhotos">0</strong>
+              </article>
+            </div>
+            <div class="compensation-details">
+              <div class="comp-line">
+                <span>150 TL çekim toplamı</span>
+                <strong id="count150">0 fotoğraf</strong>
+              </div>
+              <div class="comp-line">
+                <span>200 TL çekim toplamı</span>
+                <strong id="count200">0 fotoğraf</strong>
+              </div>
+              <div class="comp-line">
+                <span>Özel fiyatlı çekimler</span>
+                <strong id="customCount">0 fotoğraf</strong>
+              </div>
+            </div>
+            <div class="section-head history-head">
+              <h2>Günlük Geçmiş</h2>
+              <p>Önceki günlerin kullanıcı bazlı hakediş kayıtları aşağıda listelenir.</p>
+            </div>
+            <div id="workerHistoryActions" class="history-actions hidden">
+              <button type="button" id="workerHistoryToggle" class="secondary-btn">Daha Fazla Göster</button>
+            </div>
+            <div id="workerHistoryList" class="history-list"></div>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="card">
+            <div class="section-head">
+              <h2>Satış Girişi</h2>
+              <p>Yeni bir günlük satış kaydı ekleyin.</p>
+            </div>
+
+            <form id="saleForm" class="sale-form">
+              <input type="hidden" id="saleId" />
+
+              <label>
+                <span>Tarih</span>
+                <input type="date" id="saleDate" required />
+              </label>
+
+              <label>
+                <span>Fotoğraf Adedi</span>
+                <input type="number" id="photoCount" min="0" step="1" required />
+              </label>
+
+              <div class="price-picker">
+                <span>Birim Fiyat (TL)</span>
+                <div class="price-options">
+                  <button type="button" class="price-option" data-price="150">150 TL</button>
+                  <button type="button" class="price-option" data-price="200">200 TL</button>
+                  <button type="button" id="customPriceBtn" class="price-option">Özel Fiyat</button>
+                </div>
+                <label id="customPriceWrapper" class="hidden">
+                  <span>Özel Fiyat Girin</span>
+                  <input type="number" id="unitPrice" min="0" step="0.01" placeholder="Örn. 175" />
+                </label>
+                <input type="hidden" id="selectedPrice" required />
+              </div>
+
+              <div class="preview-box">
+                <span>Hesaplanan Toplam</span>
+                <strong id="calculatedTotal">0 TL</strong>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="primary-btn">Kaydet</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="card">
+            <div class="section-head">
+              <h2>Satış Listesi</h2>
+              <p id="salesListDescription">Eklenen günlük satış kayıtları aşağıda listelenir.</p>
+            </div>
+
+            <div id="emptyState" class="empty-state hidden">
+              Henüz kayıt eklenmedi.
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Satışı Giren</th>
+                    <th>Tarih</th>
+                    <th>Kayıt Zamanı</th>
+                    <th>Adet</th>
+                    <th>Birim Fiyat</th>
+                    <th>Toplam</th>
+                    <th id="actionsHeader">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="salesTableBody"></tbody>
+              </table>
+            </div>
+            <div id="salesPagination" class="pagination hidden">
+              <button type="button" id="prevPageBtn" class="secondary-btn">Önceki</button>
+              <span id="paginationInfo">1 / 1</span>
+              <button type="button" id="nextPageBtn" class="secondary-btn">Sonraki</button>
+            </div>
+          </article>
+        </section>
+
+        <section id="ownerEarningsSection" class="roles-grid hidden">
+          <article class="card role-card">
+            <div class="section-head">
+              <h2>Kullanıcı Günlük Kazançları</h2>
+              <p>Seçilen tarihte iş sahibi ve çalışan bazlı hakediş, prim ve toplam kazanç listesi.</p>
+            </div>
+            <div class="owner-toolbar">
+              <label class="owner-filter">
+                <span>Tarih Seçin</span>
+                <input type="date" id="ownerDateFilter" />
+              </label>
+            </div>
+            <div id="ownerDailyEarningsList" class="owner-list"></div>
+            <div id="ownerWorkerDetail" class="owner-detail hidden">
+              <div class="section-head owner-detail-head">
+                <h2 id="ownerDetailTitle">Kullanıcı Detayı</h2>
+                <p id="ownerDetailSubtitle">Seçilen kullanıcının günlük geçmişi burada listelenir.</p>
+              </div>
+              <div id="ownerHistoryActions" class="history-actions hidden">
+                <button type="button" id="ownerHistoryToggle" class="secondary-btn">Daha Fazla Göster</button>
+              </div>
+              <div id="ownerWorkerHistoryList" class="history-list"></div>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <div id="deleteModal" class="modal-overlay hidden">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+          <div class="modal-head">
+            <h2 id="deleteModalTitle">Kaydı Sil</h2>
+            <p>Bu satış kaydını silmek istediğinize emin misiniz?</p>
+          </div>
+          <div class="modal-actions">
+            <button type="button" id="deleteModalCancelBtn" class="secondary-btn">Vazgeç</button>
+            <button type="button" id="deleteModalConfirmBtn" class="table-btn delete-btn">Sil</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+FOTO SATIŞ TAKİP UYGULAMASI KURULUM REHBERİ
+
+Bu proje Python, FastAPI ve SQLite kullanır.
+Aşağıdaki adımları sırasıyla uygulayın.
+
+1. Proje klasörüne girin
+cd /Users/efetasdemir/Desktop/musiconpolaroid
+
+2. Sanal ortam oluşturun
+python3 -m venv .venv
+
+3. Sanal ortamı aktif edin
+source .venv/bin/activate
+
+Aktif olduğunda terminal başında şu şekilde görünür:
+(.venv)
+
+4. Gerekli paketleri kurun
+pip install -r requirements.txt
+
+5. Uygulamayı çalıştırın
+uvicorn main:app --reload
+
+Eğer "zsh: command not found: uvicorn" hatası alırsanız:
+python -m uvicorn main:app --reload
+
+6. Tarayıcıda şu adresi açın
+http://127.0.0.1:8000
+
+İLK GİRİŞ BİLGİLERİ
+
+- İşletme sahibi:
+  kullanıcı adı: sahip
+  şifre: sahip123
+
+- İşçi:
+  kullanıcı adı: isci
+  şifre: isci123
+
+NOTLAR
+
+- Kurulum sırasında internet bağlantısı gerekir.
+- sales.db dosyası uygulama ilk kez açıldığında otomatik oluşur.
+- Programı kapatmak için terminalde Control + C yapın.
+
+YAYGIN HATALAR
+
+1. "ERROR: Operation cancelled by user"
+Bu, paket kurulumu yarıda kesildiği anlamına gelir.
+Tekrar şu komutu çalıştırın:
+pip install -r requirements.txt
+
+2. "zsh: command not found: uvicorn"
+Paketler tam kurulmamıştır veya sanal ortam aktif değildir.
+Sırayla şunları deneyin:
+
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m uvicorn main:app --reload
+
+3. Tarayıcıda sayfa açılmıyor
+Terminalde hata var mı kontrol edin.
+Sunucu açık değilse tekrar çalıştırın:
+python -m uvicorn main:app --reload
