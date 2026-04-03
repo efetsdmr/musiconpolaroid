@@ -283,13 +283,6 @@ def read_index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
 
 
-@app.get("/{full_path:path}")
-def read_app_path(full_path: str) -> FileResponse:
-    if full_path.startswith("api/") or full_path.startswith("static/"):
-        raise HTTPException(status_code=404, detail="Bulunamadı")
-    return FileResponse(STATIC_DIR / "index.html")
-
-
 @app.get("/api/sales")
 def list_sales(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     where_clause = ""
@@ -708,3 +701,10 @@ def list_roles(current_user: dict[str, Any] = Depends(get_current_user)) -> dict
             },
         ],
     }
+
+
+@app.get("/{full_path:path}")
+def read_app_path(full_path: str) -> FileResponse:
+    if full_path.startswith("api/") or full_path.startswith("static/"):
+        raise HTTPException(status_code=404, detail="Bulunamadı")
+    return FileResponse(STATIC_DIR / "index.html")
