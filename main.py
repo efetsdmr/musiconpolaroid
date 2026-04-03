@@ -37,6 +37,7 @@ def build_session_expiry() -> str:
 def get_connection() -> sqlite3.Connection:
     connection = sqlite3.connect(DB_PATH)
     connection.row_factory = sqlite3.Row
+    ensure_sqlite_schema(connection)
     return connection
 
 
@@ -45,72 +46,82 @@ def column_exists(connection: sqlite3.Connection, table_name: str, column_name: 
     return any(column["name"] == column_name for column in columns)
 
 
+def ensure_sqlite_schema(connection: sqlite3.Connection) -> None:
+    connection.execute(
+        """
+        CREATE TABLE IF NOT EXISTS sales (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            sale_date TEXT NOT NULL,
+            photo_count INTEGER NOT NULL CHECK(photo_count >= 0),
+            unit_price REAL NOT NULL CHECK(unit_price >= 0),
+            total_price REAL NOT NULL CHECK(total_price >= 0),
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+        )
+        """
+    )
+    connection.execute(
+        """
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            role TEXT NOT NULL CHECK(role IN ('owner', 'worker')),
+            is_active INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+        """
+    )
+    connection.execute(
+        """
+        CREATE TABLE IF NOT EXISTS sessions (
+            token TEXT PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            expires_at TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+        """
+    )
+
+    users_count = connection.execute("SELECT COUNT(*) AS count FROM users").fetchone()["count"]
+    if users_count == 0:
+        connection.execute(
+            """
+            INSERT INTO users (username, password_hash, full_name, role)
+            VALUES (?, ?, ?, ?)
+            """,
+            ("bahadir", hash_password("0658"), "Bahadır", "owner"),
+        )
+        connection.execute(
+            """
+            INSERT INTO users (username, password_hash, full_name, role)
+            VALUES (?, ?, ?, ?)
+            """,
+            ("beth", hash_password("0606"), "Betül", "worker"),
+        )
+
+    if not column_exists(connection, "sales", "user_id"):
+        connection.execute("ALTER TABLE sales ADD COLUMN user_id INTEGER")
+
+    owner_user = connection.execute(
+        "SELECT id FROM users WHERE role = 'owner' ORDER BY id ASC LIMIT 1"
+    ).fetchone()
+    if owner_user:
+        connection.execute(
+            "UPDATE sales SET user_id = ? WHERE user_id IS NULL",
+            (owner_user["id"],),
+        )
+    connection.commit()
+
+
 def init_db() -> None:
-    with closing(get_connection()) as connection:
-        connection.execute(
-            """
-            CREATE TABLE IF NOT EXISTS sales (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER,
-                sale_date TEXT NOT NULL,
-                photo_count INTEGER NOT NULL CHECK(photo_count >= 0),
-                unit_price REAL NOT NULL CHECK(unit_price >= 0),
-                total_price REAL NOT NULL CHECK(total_price >= 0),
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-            )
-            """
-        )
-        connection.execute(
-            """
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL UNIQUE,
-                password_hash TEXT NOT NULL,
-                full_name TEXT NOT NULL,
-                role TEXT NOT NULL CHECK(role IN ('owner', 'worker')),
-                is_active INTEGER NOT NULL DEFAULT 1,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-        connection.execute(
-            """
-            CREATE TABLE IF NOT EXISTS sessions (
-                token TEXT PRIMARY KEY,
-                user_id INTEGER NOT NULL,
-                expires_at TEXT NOT NULL,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            )
-            """
-        )
-
-        users_count = connection.execute("SELECT COUNT(*) AS count FROM users").fetchone()["count"]
-        if users_count == 0:
-            connection.executemany(
-                """
-                INSERT INTO users (username, password_hash, full_name, role)
-                VALUES (?, ?, ?, ?)
-                """,
-                [
-                    ("sahip", hash_password("sahip123"), "İşletme Sahibi", "owner"),
-                    ("isci", hash_password("isci123"), "Çalışan", "worker"),
-                ],
-            )
-
-        if not column_exists(connection, "sales", "user_id"):
-            connection.execute("ALTER TABLE sales ADD COLUMN user_id INTEGER")
-
-        owner_user = connection.execute(
-            "SELECT id FROM users WHERE role = 'owner' ORDER BY id ASC LIMIT 1"
-        ).fetchone()
-        if owner_user:
-            connection.execute(
-                "UPDATE sales SET user_id = ? WHERE user_id IS NULL",
-                (owner_user["id"],),
-            )
-        connection.commit()
+    connection = sqlite3.connect(DB_PATH)
+    connection.row_factory = sqlite3.Row
+    with closing(connection):
+        ensure_sqlite_schema(connection)
 
 
 class SalePayload(BaseModel):
