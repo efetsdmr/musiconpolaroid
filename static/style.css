@@ -509,6 +509,21 @@ input {
   font: inherit;
 }
 
+input[type="date"] {
+  min-height: 52px;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.9;
+  cursor: pointer;
+}
+
 select {
   width: 100%;
   padding: 14px 16px;
@@ -1057,6 +1072,16 @@ th {
     max-width: calc(100% - 118px);
     padding-right: 24px;
     font-size: 0.75rem;
+  }
+
+  #saleDate {
+    padding-right: 12px;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  #saleDate::-webkit-date-and-time-value {
+    min-height: 24px;
   }
 
   .sale-form,
